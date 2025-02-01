@@ -4,7 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,14 +16,14 @@ import java.util.Collections;
 import java.util.Set;
 
 @Component
-@EnableConfigurationProperties(ApiKeyAuthenticationFilterConfigProperties.class)
 public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String API_KEY_HEADER = "X-API-KEY";
+
     private final Set<String> apiKeys;
 
-    public ApiKeyAuthenticationFilter(ApiKeyAuthenticationFilterConfigProperties configProperties) {
-        this.apiKeys = configProperties.keys();
+    public ApiKeyAuthenticationFilter(@Value("${exchange-rate-api-key-authentication.keys}") final Set<String> apiKeys) {
+        this.apiKeys = apiKeys;
     }
 
     @Override

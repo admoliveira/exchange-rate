@@ -1,18 +1,21 @@
 package com.admoliveira.exchangerate.devmock;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Currency;
 
+@Slf4j
 @RestController
 public class DevmockController {
 
     @GetMapping("/devmock/exchangerate/live")
     String getRates(
             @RequestParam(value = "source") Currency source){
+        log.info("Calling dev mock: /devmock/exchangerate/live");
         return """
                 {
                     "success": true,
@@ -34,6 +37,7 @@ public class DevmockController {
     @GetMapping("/devmock/exchangeratesapiio/v1/latest")
     String getRatesExchangeratesApiIo(
             @RequestParam(value = "base") Currency base){
+        log.info("Calling dev mock: /devmock/exchangeratesapiio/v1/latest");
         return """
                 {
                   "success": true,

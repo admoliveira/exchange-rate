@@ -2,11 +2,11 @@ package com.admoliveira.exchangerate.service;
 
 import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
@@ -26,10 +26,7 @@ public class RatesService {
                 .collect(Collectors.toList());
     }
 
-    public Map<Currency, BigDecimal> getRates(final Currency from) {
-        return getRates(from, Collections.emptySet());
-    }
-
+    @Cacheable(value = "rates",  key = "#from.currencyCode")
     public Map<Currency, BigDecimal> getRates(final Currency from, final Set<Currency> to) {
         for (ExchangeRateExternalApiService externalApiService : externalApiServices) {
             try {
