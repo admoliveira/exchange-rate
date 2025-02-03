@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.List;
 import java.util.Map;
 
 public record ConversionResponse(
@@ -24,5 +25,5 @@ public record ConversionResponse(
                         }
                         """
         )
-        Map<Currency, BigDecimal> conversions) {
+        List<CurrencyConversion> conversions) {
 }

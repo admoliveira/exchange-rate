@@ -1,7 +1,8 @@
 package com.admoliveira.exchangerate.controller;
 
-import com.admoliveira.exchangerate.api.RatesApi;
+import com.admoliveira.exchangerate.api.RatesRestApi;
 import com.admoliveira.exchangerate.dto.RatesResponse;
+import com.admoliveira.exchangerate.mapper.RatesResponseMapper;
 import com.admoliveira.exchangerate.service.RatesService;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,18 +11,22 @@ import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
 
+
 @RestController
-public class RatesController implements RatesApi {
+public class RatesRestController implements RatesRestApi {
 
     public final RatesService ratesService;
+    public final RatesResponseMapper ratesResponseMapper;
 
-    public RatesController(RatesService ratesService) {
+    public RatesRestController(final RatesService ratesService,
+                               final RatesResponseMapper ratesResponseMapper) {
         this.ratesService = ratesService;
+        this.ratesResponseMapper = ratesResponseMapper;
     }
 
     @Override
     public RatesResponse getRates(final Currency from, final Set<Currency> to) {
         final Map<Currency, BigDecimal> rates = ratesService.getRates(from, to);
-        return new RatesResponse(from, rates);
+        return ratesResponseMapper.toRatesResponse(from, rates);
     }
 }

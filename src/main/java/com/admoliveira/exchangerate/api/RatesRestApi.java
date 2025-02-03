@@ -10,7 +10,7 @@ import java.util.Currency;
 import java.util.Set;
 
 @RequestMapping("/rates")
-public interface RatesApi {
+public interface RatesRestApi {
 
     @GetMapping(produces = "application/json")
     RatesResponse getRates(

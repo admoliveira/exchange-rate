@@ -8,7 +8,11 @@ services:
       - "8080:8080"
   redis:
     image: "redis:7.4.2"
+    command: redis-server --appendonly yes --bind 0.0.0.0
     ports:
       - "6379:6379"
-    environment:
-      - REDIS_PASSWORD=redis_password
+
+  redis-insights:
+    image: "redis/redisinsight:latest"
+    ports:
+      - "5540:5540"

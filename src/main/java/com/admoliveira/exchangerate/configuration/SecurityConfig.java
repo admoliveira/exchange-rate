@@ -20,11 +20,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/devmock/**").permitAll()
-                            .requestMatchers("/swagger-ui/**").permitAll()
-                            .requestMatchers("/v3/api-docs/**").permitAll()
-                            .anyRequest().authenticated())
+        http.csrf().disable() //TODO fix this
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/rates").authenticated()
+                            .requestMatchers("/conversions").authenticated()
+                            .anyRequest().permitAll())
              .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

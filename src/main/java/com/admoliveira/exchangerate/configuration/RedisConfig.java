@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
 
@@ -14,19 +15,25 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
-    private final Duration ttl;
+    private final Duration ratesTtl;
 
-    public RedisConfig(@Value("${exchange-rate.redis-config.rates.time-to-live}") final Duration ttl) {
-        this.ttl = ttl;
+    public RedisConfig(@Value("${exchange-rate.redis-config.rates.time-to-live}") final Duration ratesTtl) {
+
+        this.ratesTtl = ratesTtl;
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-        final RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(ttl);
-
+    public RedisCacheManager cacheManager(final RedisConnectionFactory redisConnectionFactory) {
         return RedisCacheManager.builder(redisConnectionFactory)
-                .withCacheConfiguration("rates", RedisCacheConfiguration.defaultCacheConfig().entryTtl(ttl))
+                .withCacheConfiguration("rates", RedisCacheConfiguration.defaultCacheConfig().entryTtl(ratesTtl))
                 .build();
+
+    }
+
+    @Bean
+    public RedisTemplate<String, Long> redisTemplate(final RedisConnectionFactory factory) {
+        final RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+        return template;
     }
 }

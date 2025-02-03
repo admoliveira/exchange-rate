@@ -1,0 +1,25 @@
+type Query {
+  getRates(from: String!, to: [String]): RatesResponse
+  getConversions(from: String!, to: [String], amount: Float!): ConversionResponse
+}
+
+type RatesResponse {
+  from: String
+  rates: [Rate]
+}
+
+type Rate {
+  currency: String
+  rate: Float
+}
+
+type ConversionResponse {
+  from: String
+  amount: Float
+  conversions: [Conversion]
+}
+
+type Conversion {
+  currency: String
+  conversion: Float
+}

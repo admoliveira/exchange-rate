@@ -11,7 +11,7 @@ import java.util.Currency;
 import java.util.Set;
 
 @RequestMapping("/conversions")
-public interface ConversionApi {
+public interface ConversionRestApi {
 
     @GetMapping(produces = "application/json")
     ConversionResponse getConversions(
