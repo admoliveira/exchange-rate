@@ -1,6 +1,6 @@
 package com.admoliveira.exchangerate.configuration;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,25 +9,25 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.time.Duration;
-
 @Configuration
 @EnableCaching
+@EnableConfigurationProperties(RedisConfigConfigProperties.class)
 public class RedisConfig {
 
-    private final Duration ratesTtl;
+    private final RedisConfigConfigProperties configProperties;
 
-    public RedisConfig(@Value("${exchange-rate.redis-config.rates.time-to-live}") final Duration ratesTtl) {
-
-        this.ratesTtl = ratesTtl;
+    public RedisConfig(final RedisConfigConfigProperties configProperties) {
+        this.configProperties = configProperties;
     }
 
     @Bean
     public RedisCacheManager cacheManager(final RedisConnectionFactory redisConnectionFactory) {
         return RedisCacheManager.builder(redisConnectionFactory)
-                .withCacheConfiguration("rates", RedisCacheConfiguration.defaultCacheConfig().entryTtl(ratesTtl))
+                .withCacheConfiguration("rates",
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(configProperties.rates().timeToLive()))
+                .withCacheConfiguration("rate-limiter",
+                        RedisCacheConfiguration.defaultCacheConfig().entryTtl(configProperties.rateLimiter().timeToLive()))
                 .build();
-
     }
 
     @Bean
