@@ -5,25 +5,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
-import java.util.Map;
 
 public record ConversionResponse(
-        @Schema(description = "Currency", type = "string", example = "USD")
+        @Schema(description = "The base currency of the conversion.", type = "string", example = "USD")
         Currency from,
 
-        @Schema(description = "Amount", example = "100")
+        @Schema(description = "The amount to be converted.", example = "100")
         BigDecimal amount,
 
-        @Schema(
-                description = "Requested conversions",
-                type = "map",
-                implementation = Map.class,
-                example = """
-                        {
-                          "EUR" : 123.422,
-                          "GBP" : 111.232
-                        }
-                        """
-        )
+        @Schema(description = "A list of conversion results for the specified target currencies.")
         List<CurrencyConversion> conversions) {
 }

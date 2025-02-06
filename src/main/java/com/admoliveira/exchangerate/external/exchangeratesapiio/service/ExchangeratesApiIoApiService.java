@@ -17,7 +17,7 @@ import java.util.Map;
 public class ExchangeratesApiIoApiService implements ExchangeRateExternalApiService {
 
     private final ExchangeratesApiIoClient client;
-    private final String apiKey;
+    private final ExchangeratesApiIoApiServiceConfigProperties configProperties;
 
     public ExchangeratesApiIoApiService(final ExchangeratesApiIoApiServiceConfigProperties configProperties) {
         final RestClient restClient = RestClient.builder()
@@ -26,12 +26,12 @@ public class ExchangeratesApiIoApiService implements ExchangeRateExternalApiServ
         final RestClientAdapter adapter = RestClientAdapter.create(restClient);
         final HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
         this.client = factory.createClient(ExchangeratesApiIoClient.class);
-        this.apiKey = configProperties.apiKey();
+        this.configProperties = configProperties;
     }
 
     @Override
     public Map<Currency, BigDecimal> getExchangeRates(final Currency currency) {
-        return client.getLatest(currency, apiKey).rates();
+        return client.getLatest(currency, configProperties.apiKey()).rates();
     }
 
     @Override

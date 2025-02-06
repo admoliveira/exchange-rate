@@ -21,7 +21,7 @@ public class ConversionService {
     }
 
     public Map<Currency, BigDecimal> getConversions(final Currency from, final Set<Currency> to, final BigDecimal amount) {
-        Stream<Map.Entry<Currency, BigDecimal>> stream = ratesService.getRates(from, Collections.emptySet()).entrySet().stream();
+        Stream<Map.Entry<Currency, BigDecimal>> stream = ratesService.getRates(from).entrySet().stream();
         if (!CollectionUtils.isEmpty(to)) {
             stream = stream.filter(e -> to.contains(e.getKey()));
         }

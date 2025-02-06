@@ -4,6 +4,7 @@ import com.admoliveira.exchangerate.api.RatesRestApi;
 import com.admoliveira.exchangerate.dto.RatesResponse;
 import com.admoliveira.exchangerate.mapper.RatesResponseMapper;
 import com.admoliveira.exchangerate.service.RatesService;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -26,7 +27,11 @@ public class RatesRestController implements RatesRestApi {
 
     @Override
     public RatesResponse getRates(final Currency from, final Set<Currency> to) {
-        final Map<Currency, BigDecimal> rates = ratesService.getRates(from, to);
+        Map<Currency, BigDecimal> rates = ratesService.getRates(from);
+        if (!CollectionUtils.isEmpty(to)) {
+            rates.keySet().retainAll(to);
+        }
         return ratesResponseMapper.toRatesResponse(from, rates);
     }
+
 }

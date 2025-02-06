@@ -1,5 +1,6 @@
 package com.admoliveira.exchangerate.service;
 
+import com.admoliveira.exchangerate.configuration.CacheConfig;
 import com.admoliveira.exchangerate.model.RateLimitBucket;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class RateLimiterService {
 
     public RateLimitBucket limit(final HttpServletRequest request) {
         final long slot = (System.currentTimeMillis() / MILLIS_PER_SECOND) / windowSeconds;
-        final String key = String.format("rl_%s_%s", request.getRemoteAddr(), slot);
+        final String key = String.format("%s_%s", request.getRemoteAddr(), slot);
 
         int count = rateLimitCached.getCount(key);
         int remaining = maxRequestsPerWindow - count;
@@ -39,18 +40,18 @@ public class RateLimiterService {
             remaining--;
             rateLimitCached.putCount(key, count + 1);
         }
-        return new RateLimitBucket(maxRequestsPerWindow, remaining, (slot + 1) * windowSeconds);
 
+        return new RateLimitBucket(maxRequestsPerWindow, remaining, (slot + 1) * windowSeconds);
     }
 
     @Component
     public static class RateLimitCached {
-        @Cacheable(value = "rate-limiter", key = "#key")
+        @Cacheable(value = CacheConfig.RATE_LIMITER_CACHE_NAME, key = "#key")
         public int getCount(String key) {
             return 0;
         }
 
-        @CachePut(value = "rate-limiter", key = "#key")
+        @CachePut(value = CacheConfig.RATE_LIMITER_CACHE_NAME, key = "#key")
         public int putCount(String key, int count) {
             return count;
         }

@@ -5,6 +5,7 @@ import com.admoliveira.exchangerate.dto.RatesResponse;
 import com.admoliveira.exchangerate.mapper.RatesResponseMapper;
 import com.admoliveira.exchangerate.service.RatesService;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -25,7 +26,11 @@ public class RatesGraphqlController implements RatesGraphqlApi {
 
     @Override
     public RatesResponse getRates(final Currency from, final Set<Currency> to) {
-        final Map<Currency, BigDecimal> rates = ratesService.getRates(from, to);
+        final Map<Currency, BigDecimal> rates = ratesService.getRates(from);
+        if (!CollectionUtils.isEmpty(to)) {
+            rates.keySet().retainAll(to);
+        }
         return ratesResponseMapper.toRatesResponse(from, rates);
     }
+
 }

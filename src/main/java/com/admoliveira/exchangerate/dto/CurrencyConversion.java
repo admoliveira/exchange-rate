@@ -1,7 +1,14 @@
 package com.admoliveira.exchangerate.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 
-public record CurrencyConversion(Currency currency, BigDecimal conversion) {
+public record CurrencyConversion(
+        @Schema(description = "The target currency for the conversion.", type = "string", example = "EUR")
+        Currency currency,
+
+        @Schema(description = "The converted amount in the target currency.", example = "102.5")
+        BigDecimal conversion) {
 }

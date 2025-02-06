@@ -1,17 +1,16 @@
 package com.admoliveira.exchangerate.service;
 
+import com.admoliveira.exchangerate.configuration.CacheConfig;
 import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,12 +25,11 @@ public class RatesService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "rates",  key = "#from.currencyCode")
-    public Map<Currency, BigDecimal> getRates(final Currency from, final Set<Currency> to) {
+    @Cacheable(value = CacheConfig.RATES_CACHE_NAME,  key = "#from.currencyCode")
+    public Map<Currency, BigDecimal> getRates(final Currency from) {
         for (ExchangeRateExternalApiService externalApiService : externalApiServices) {
             try {
-                Map<Currency, BigDecimal> rates = externalApiService.getExchangeRates(from);
-                return CollectionUtils.isEmpty(to) ? rates : filterRates(rates, to);
+                return externalApiService.getExchangeRates(from);
             } catch (Exception e) {
                 log.error("Error getting rates for currency {}", from, e);
             }
@@ -39,12 +37,4 @@ public class RatesService {
         throw new RuntimeException("Unable to get rates for currency " + from);
     }
 
-    private static Map<Currency, BigDecimal> filterRates(final Map<Currency, BigDecimal> rates, final Set<Currency> to) {
-        return rates.entrySet().stream()
-                .filter(entry -> to.contains(entry.getKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue)
-                );
-    }
 }

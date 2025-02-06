@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ExchangerateHostApiService implements ExchangeRateExternalApiService {
 
     private final ExchangerateHostClient client;
-    private final String apiKey;
+    private final ExchangerateHostApiServiceConfigProperties configProperties;
 
     public ExchangerateHostApiService(final ExchangerateHostApiServiceConfigProperties configProperties) {
         final RestClient restClient = RestClient.builder()
@@ -27,12 +27,12 @@ public class ExchangerateHostApiService implements ExchangeRateExternalApiServic
         final RestClientAdapter adapter = RestClientAdapter.create(restClient);
         final HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
         this.client = factory.createClient(ExchangerateHostClient.class);
-        this.apiKey = configProperties.apiKey();
+        this.configProperties = configProperties;
     }
 
     @Override
     public Map<Currency, BigDecimal> getExchangeRates(final Currency currency) {
-        return client.getLive(currency, apiKey).quotes().entrySet().stream()
+        return client.getLive(currency, configProperties.apiKey()).quotes().entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(currency.getCurrencyCode()))
                 .collect(Collectors.toMap(
                         entry -> Currency.getInstance(entry.getKey().substring(currency.getCurrencyCode().length())),
@@ -42,6 +42,6 @@ public class ExchangerateHostApiService implements ExchangeRateExternalApiServic
 
     @Override
     public int getPriority() {
-        return 0;
+        return configProperties.priority();
     }
 }

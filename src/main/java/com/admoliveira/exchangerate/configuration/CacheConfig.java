@@ -7,33 +7,29 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
 @EnableCaching
-@EnableConfigurationProperties(RedisConfigConfigProperties.class)
-public class RedisConfig {
+@EnableConfigurationProperties(CacheConfigProperties.class)
+public class CacheConfig {
 
-    private final RedisConfigConfigProperties configProperties;
+    public static final String RATES_CACHE_NAME = "rates";
+    public static final String RATE_LIMITER_CACHE_NAME = "rate-limiter";
+    private final CacheConfigProperties configProperties;
 
-    public RedisConfig(final RedisConfigConfigProperties configProperties) {
+    public CacheConfig(final CacheConfigProperties configProperties) {
         this.configProperties = configProperties;
     }
 
     @Bean
     public RedisCacheManager cacheManager(final RedisConnectionFactory redisConnectionFactory) {
         return RedisCacheManager.builder(redisConnectionFactory)
-                .withCacheConfiguration("rates",
+                .withCacheConfiguration(RATES_CACHE_NAME,
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(configProperties.rates().timeToLive()))
-                .withCacheConfiguration("rate-limiter",
+                .withCacheConfiguration(RATE_LIMITER_CACHE_NAME,
                         RedisCacheConfiguration.defaultCacheConfig().entryTtl(configProperties.rateLimiter().timeToLive()))
                 .build();
     }
 
-    @Bean
-    public RedisTemplate<String, Long> redisTemplate(final RedisConnectionFactory factory) {
-        final RedisTemplate<String, Long> template = new RedisTemplate<>();
-        template.setConnectionFactory(factory);
-        return template;
-    }
+
 }
