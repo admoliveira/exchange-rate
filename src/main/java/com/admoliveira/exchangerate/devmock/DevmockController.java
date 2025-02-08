@@ -14,8 +14,9 @@ public class DevmockController {
 
     @GetMapping("/devmock/exchangerate/live")
     String getRates(
-            @RequestParam(value = "source") Currency source){
-        log.info("Calling dev mock: /devmock/exchangerate/live");
+            @RequestParam(value = "source") Currency source,
+            @RequestParam(value = "access_key") String accessKey){
+        log.info("Calling dev mock: /devmock/exchangerate/live with access_key: " + accessKey);
         return """
                 {
                     "success": true,
@@ -36,8 +37,9 @@ public class DevmockController {
 
     @GetMapping("/devmock/exchangeratesapiio/v1/latest")
     String getRatesExchangeratesApiIo(
-            @RequestParam(value = "base") Currency base){
-        log.info("Calling dev mock: /devmock/exchangeratesapiio/v1/latest");
+            @RequestParam(value = "base") Currency base,
+            @RequestParam(value = "access_key") String accessKey){
+        log.info("Calling dev mock: /devmock/exchangeratesapiio/v1/latest with access_key: " + accessKey);
         return """
                 {
                   "success": true,

@@ -11,7 +11,5 @@ import java.util.Currency;
 public interface ExchangeratesApiIoClient {
 
     @GetExchange(value = "/latest", accept = "application/json")
-    ExchangeratesApiIoLatestResponse getLatest(
-            @RequestParam(value = "base") Currency base,
-            @RequestParam(value = "access_key") String apiKey);
+    ExchangeratesApiIoLatestResponse getLatest(@RequestParam(value = "base") Currency base);
 }

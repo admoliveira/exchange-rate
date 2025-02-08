@@ -4,9 +4,6 @@ import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import com.admoliveira.exchangerate.external.exchangeratehost.client.ExchangerateHostClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -20,19 +17,16 @@ public class ExchangerateHostApiService implements ExchangeRateExternalApiServic
     private final ExchangerateHostClient client;
     private final ExchangerateHostApiServiceConfigProperties configProperties;
 
-    public ExchangerateHostApiService(final ExchangerateHostApiServiceConfigProperties configProperties) {
-        final RestClient restClient = RestClient.builder()
-                .baseUrl(configProperties.baseUrl())
-                .build();
-        final RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        final HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        this.client = factory.createClient(ExchangerateHostClient.class);
+    public ExchangerateHostApiService(final ExchangerateHostApiServiceConfigProperties configProperties,
+                                      final ExchangerateHostClient client) {
+
+        this.client = client;
         this.configProperties = configProperties;
     }
 
     @Override
     public Map<Currency, BigDecimal> getExchangeRates(final Currency currency) {
-        return client.getLive(currency, configProperties.apiKey()).quotes().entrySet().stream()
+        return client.getLive(currency).quotes().entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(currency.getCurrencyCode()))
                 .collect(Collectors.toMap(
                         entry -> Currency.getInstance(entry.getKey().substring(currency.getCurrencyCode().length())),
@@ -44,4 +38,5 @@ public class ExchangerateHostApiService implements ExchangeRateExternalApiServic
     public int getPriority() {
         return configProperties.priority();
     }
+
 }

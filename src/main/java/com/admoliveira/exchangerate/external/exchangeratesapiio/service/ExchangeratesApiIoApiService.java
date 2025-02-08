@@ -4,9 +4,6 @@ import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import com.admoliveira.exchangerate.external.exchangeratesapiio.client.ExchangeratesApiIoClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.support.RestClientAdapter;
-import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -19,23 +16,20 @@ public class ExchangeratesApiIoApiService implements ExchangeRateExternalApiServ
     private final ExchangeratesApiIoClient client;
     private final ExchangeratesApiIoApiServiceConfigProperties configProperties;
 
-    public ExchangeratesApiIoApiService(final ExchangeratesApiIoApiServiceConfigProperties configProperties) {
-        final RestClient restClient = RestClient.builder()
-                .baseUrl(configProperties.baseUrl())
-                .build();
-        final RestClientAdapter adapter = RestClientAdapter.create(restClient);
-        final HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
-        this.client = factory.createClient(ExchangeratesApiIoClient.class);
+    public ExchangeratesApiIoApiService(
+            final ExchangeratesApiIoClient client,
+            final ExchangeratesApiIoApiServiceConfigProperties configProperties) {
+        this.client = client;
         this.configProperties = configProperties;
     }
 
     @Override
     public Map<Currency, BigDecimal> getExchangeRates(final Currency currency) {
-        return client.getLatest(currency, configProperties.apiKey()).rates();
+        return client.getLatest(currency).rates();
     }
 
     @Override
     public int getPriority() {
-        return 1;
+        return configProperties.priority();
     }
 }

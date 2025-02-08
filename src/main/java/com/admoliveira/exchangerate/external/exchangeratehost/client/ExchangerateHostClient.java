@@ -11,7 +11,5 @@ import java.util.Currency;
 public interface ExchangerateHostClient {
 
     @GetExchange(value = "/live", accept = "application/json")
-    ExchangerateHostLiveResponse getLive(
-            @RequestParam(value = "source") Currency source,
-            @RequestParam(value = "access_key") String apiKey);
+    ExchangerateHostLiveResponse getLive(@RequestParam(value = "source") Currency source);
 }
