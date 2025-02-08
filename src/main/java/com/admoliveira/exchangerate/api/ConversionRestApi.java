@@ -4,6 +4,7 @@ import com.admoliveira.exchangerate.dto.ConversionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.DecimalMin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,5 +36,6 @@ public interface ConversionRestApi {
             @RequestParam(value = "to", required = false) Set<Currency> to,
 
             @Schema(description = "The amount to be converted.", example = "50.5")
+            @DecimalMin(value = "0.0", inclusive = false)
             @RequestParam(value = "amount") BigDecimal amount);
 }

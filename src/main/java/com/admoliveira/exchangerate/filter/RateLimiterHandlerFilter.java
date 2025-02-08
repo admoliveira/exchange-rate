@@ -1,6 +1,6 @@
 package com.admoliveira.exchangerate.filter;
 
-import com.admoliveira.exchangerate.model.RateLimitBucket;
+import com.admoliveira.exchangerate.model.RateLimitStatus;
 import com.admoliveira.exchangerate.service.RateLimiterService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,13 +29,13 @@ public class RateLimiterHandlerFilter extends OncePerRequestFilter {
                                     final HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
 
-        final RateLimitBucket bucketResult = service.limit(request);
+        final RateLimitStatus rateLimitStatus = service.limit(request);
 
-        response.addHeader("X-Rate-Limit-Limit", String.valueOf(bucketResult.limit()));
-        response.addHeader("X-Rate-Limit-Remaining", String.valueOf(bucketResult.remaining()));
-        response.addHeader("X-Rate-Limit-Reset", String.valueOf(bucketResult.reset()));
+        response.addHeader("X-Rate-Limit-Limit", String.valueOf(rateLimitStatus.limit()));
+        response.addHeader("X-Rate-Limit-Remaining", String.valueOf(rateLimitStatus.remaining()));
+        response.addHeader("X-Rate-Limit-Reset", String.valueOf(rateLimitStatus.reset()));
 
-        if (bucketResult.isRequestAllowed()) {
+        if (rateLimitStatus.isRequestAllowed()) {
             filterChain.doFilter(request, response);
         } else {
             response.setStatus(TOO_MANY_REQUESTS.value());

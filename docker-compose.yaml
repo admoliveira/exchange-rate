@@ -18,6 +18,16 @@ services:
     ports:
       - "9090:8080"
 
+  wiremock:
+    image: wiremock/wiremock:latest
+    container_name: wiremock
+    ports:
+      - "7070:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock/__files:/home/wiremock/__files
+
+
   redis:
     image: "redis:7.4.2"
     command: redis-server --appendonly yes --bind 0.0.0.0

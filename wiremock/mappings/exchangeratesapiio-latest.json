@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/exchangeratesapiio/v1/latest",
+    "queryParameters": {
+      "base": {
+        "equalTo": "USD"
+      },
+      "access_key": {
+        "equalTo": "api-key"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "exchangeratesapiio-latest-response.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -4,6 +4,7 @@ import com.admoliveira.exchangerate.dto.RatesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @RequestMapping("/rates")
 @Tag(name = "Rates", description = "Provides exchange rate data for various currencies.")
+@Validated
 public interface RatesRestApi {
 
     @GetMapping(produces = "application/json")

@@ -1,7 +1,7 @@
 package com.admoliveira.exchangerate.service;
 
 import com.admoliveira.exchangerate.configuration.CacheConfig;
-import com.admoliveira.exchangerate.model.RateLimitBucket;
+import com.admoliveira.exchangerate.model.RateLimitStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,20 +28,22 @@ public class RateLimiterService {
         this.rateLimitCached = rateLimitCached;
     }
 
-    public RateLimitBucket limit(final HttpServletRequest request) {
+    public RateLimitStatus limit(final HttpServletRequest request) {
         final long slot = (System.currentTimeMillis() / MILLIS_PER_SECOND) / windowSeconds;
         final String key = String.format("%s_%s", request.getRemoteAddr(), slot);
 
         int count = rateLimitCached.getCount(key);
         int remaining = maxRequestsPerWindow - count;
 
-        log.info("Rate limit for {}: {} ", key, count);
+        boolean allowed = false;
+
         if (remaining > 0) {
+            allowed = true;
             remaining--;
             rateLimitCached.putCount(key, count + 1);
         }
 
-        return new RateLimitBucket(maxRequestsPerWindow, remaining, (slot + 1) * windowSeconds);
+        return new RateLimitStatus(maxRequestsPerWindow, remaining, (slot + 1) * windowSeconds, allowed);
     }
 
     @Component

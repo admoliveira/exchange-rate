@@ -6,7 +6,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,15 +19,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(CorsConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/rates").hasAuthority("SCOPE_" + SCOPE_GET_RATES)
                                 .requestMatchers("/conversions").hasAuthority("SCOPE_" + SCOPE_GET_CONVERSIONS)
                                 .requestMatchers("/graphql").hasAuthority("SCOPE_" + SCOPE_GRAPHQL)
                                 .anyRequest().permitAll())
                 .oauth2ResourceServer((oauth2) -> oauth2
-                        .jwt(Customizer.withDefaults())
-                );
+                        .jwt(Customizer.withDefaults()));
         return http.build();
     }
 
