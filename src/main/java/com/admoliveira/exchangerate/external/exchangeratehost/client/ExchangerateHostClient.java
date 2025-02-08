@@ -5,11 +5,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
-import java.util.Currency;
-
 @HttpExchange
 public interface ExchangerateHostClient {
 
     @GetExchange(value = "/live", accept = "application/json")
-    ExchangerateHostLiveResponse getLive(@RequestParam(value = "source") Currency source);
+    ExchangerateHostLiveResponse getLive(@RequestParam(value = "source") String source);
 }

@@ -4,13 +4,12 @@ import com.admoliveira.exchangerate.dto.ConversionResponse;
 import org.mapstruct.Mapper;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 
 @Mapper(componentModel = "spring", uses = CurrencyConversionMapper.class)
 public interface ConversionResponseMapper {
 
-    ConversionResponse toConversionResponse(Currency from,
+    ConversionResponse toConversionResponse(String from,
                                             BigDecimal amount,
-                                            Map<Currency, BigDecimal> conversions);
+                                            Map<String, BigDecimal> conversions);
 }

@@ -5,7 +5,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +13,9 @@ public interface CurrencyRateMapper {
 
     @Mapping(source = "key", target = "currency")
     @Mapping(source = "value", target = "rate")
-    CurrencyRate toCurrencyRate(Map.Entry<Currency, BigDecimal> entry);
+    CurrencyRate toCurrencyRate(Map.Entry<String, BigDecimal> entry);
 
-    default List<CurrencyRate> toCurrencyRateList(Map<Currency, BigDecimal> rates) {
+    default List<CurrencyRate> toCurrencyRateList(Map<String, BigDecimal> rates) {
         return rates.entrySet().stream()
                 .map(this::toCurrencyRate)
                 .toList();

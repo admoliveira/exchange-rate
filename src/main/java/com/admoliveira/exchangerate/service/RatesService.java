@@ -1,6 +1,7 @@
 package com.admoliveira.exchangerate.service;
 
 import com.admoliveira.exchangerate.configuration.CacheConfig;
+import com.admoliveira.exchangerate.exception.UnavailableRatesException;
 import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,8 +25,8 @@ public class RatesService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = CacheConfig.RATES_CACHE_NAME,  key = "#from.currencyCode")
-    public Map<Currency, BigDecimal> getRates(final Currency from) {
+    @Cacheable(value = CacheConfig.RATES_CACHE_NAME, key = "#from")
+    public Map<String, BigDecimal> getRates(final String from) {
         for (ExchangeRateExternalApiService externalApiService : externalApiServices) {
             try {
                 return externalApiService.getExchangeRates(from);
@@ -34,7 +34,7 @@ public class RatesService {
                 log.error("Error getting rates for currency {}", from, e);
             }
         }
-        throw new RuntimeException("Unable to get rates for currency " + from);
+        throw new UnavailableRatesException();
     }
 
 }

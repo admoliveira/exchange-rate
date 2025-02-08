@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,11 +24,11 @@ public class ExchangerateHostApiService implements ExchangeRateExternalApiServic
     }
 
     @Override
-    public Map<Currency, BigDecimal> getExchangeRates(final Currency currency) {
+    public Map<String, BigDecimal> getExchangeRates(final String currency) {
         return client.getLive(currency).quotes().entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(currency.getCurrencyCode()))
+                .filter(entry -> entry.getKey().startsWith(currency))
                 .collect(Collectors.toMap(
-                        entry -> Currency.getInstance(entry.getKey().substring(currency.getCurrencyCode().length())),
+                        entry -> entry.getKey().substring(currency.length()),
                         Map.Entry::getValue
                 ));
     }

@@ -12,7 +12,13 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(ConstraintViolationException ex) {
+    public ResponseEntity<Map<String, String>> handle(ConstraintViolationException ex) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UnavailableRatesException.class)
+    public ResponseEntity<Map<String, String>> handle(UnavailableRatesException ex) {
+        return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
 }

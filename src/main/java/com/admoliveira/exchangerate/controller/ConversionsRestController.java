@@ -7,7 +7,6 @@ import com.admoliveira.exchangerate.service.ConversionService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,8 +23,8 @@ public class ConversionsRestController implements ConversionRestApi {
     }
 
     @Override
-    public ConversionResponse getConversions(final Currency from, final Set<Currency> to, final BigDecimal amount) {
-        final Map<Currency, BigDecimal> conversions = conversionService.getConversions(from, to, amount);
+    public ConversionResponse getConversions(final String from, final Set<String> to, final BigDecimal amount) {
+        final Map<String, BigDecimal> conversions = conversionService.getConversions(from, to, amount);
         return conversionResponseMapper.toConversionResponse(from, amount, conversions);
     }
 }

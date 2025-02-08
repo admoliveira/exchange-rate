@@ -1,5 +1,6 @@
 package com.admoliveira.exchangerate.service;
 
+import com.admoliveira.exchangerate.exception.UnavailableRatesException;
 import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 
@@ -39,15 +39,15 @@ class RatesServiceTest {
 
     @Test
     void success() {
-        final Currency usd = Currency.getInstance("USD");
-        final Map<Currency, BigDecimal> expectedRates = Map.of(
-                Currency.getInstance("EUR"), BigDecimal.valueOf(0.85),
-                Currency.getInstance("GBP"), BigDecimal.valueOf(0.75)
+        final String usd = "USD";
+        final Map<String, BigDecimal> expectedRates = Map.of(
+            "EUR", BigDecimal.valueOf(0.85),
+              "GBP", BigDecimal.valueOf(0.75)
         );
 
         when(apiService1.getExchangeRates(usd)).thenReturn(expectedRates);
 
-        final Map<Currency, BigDecimal> result = ratesService.getRates(usd);
+        final Map<String, BigDecimal> result = ratesService.getRates(usd);
 
         assertEquals(expectedRates, result);
         verify(apiService1, times(1)).getExchangeRates(usd);
@@ -56,15 +56,15 @@ class RatesServiceTest {
 
     @Test
     void fallbackToSecondService() {
-        final Currency usd = Currency.getInstance("USD");
-        final Map<Currency, BigDecimal> expectedRates = Map.of(
-                Currency.getInstance("EUR"), BigDecimal.valueOf(0.85)
+        final String usd = "USD";
+        final Map<String, BigDecimal> expectedRates = Map.of(
+              "EUR", BigDecimal.valueOf(0.85)
         );
 
         when(apiService1.getExchangeRates(usd)).thenThrow(new RuntimeException("API1 failure"));
         when(apiService2.getExchangeRates(usd)).thenReturn(expectedRates);
 
-        final Map<Currency, BigDecimal> result = ratesService.getRates(usd);
+        final Map<String, BigDecimal> result = ratesService.getRates(usd);
 
         assertEquals(expectedRates, result);
         verify(apiService1, times(1)).getExchangeRates(usd);
@@ -73,13 +73,12 @@ class RatesServiceTest {
 
     @Test
     void allApisFail() {
-        final Currency usd = Currency.getInstance("USD");
+        final String usd = "USD";
 
         when(apiService1.getExchangeRates(usd)).thenThrow(new RuntimeException("API1 failure"));
         when(apiService2.getExchangeRates(usd)).thenThrow(new RuntimeException("API2 failure"));
 
-        final RuntimeException exception = assertThrows(RuntimeException.class, () -> ratesService.getRates(usd));
-        assertEquals("Unable to get rates for currency USD", exception.getMessage());
+        final UnavailableRatesException exception = assertThrows(UnavailableRatesException.class, () -> ratesService.getRates(usd));
 
         verify(apiService1, times(1)).getExchangeRates(usd);
         verify(apiService2, times(1)).getExchangeRates(usd);

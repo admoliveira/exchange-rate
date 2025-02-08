@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,8 +24,8 @@ public class RatesGraphqlController implements RatesGraphqlApi {
     }
 
     @Override
-    public RatesResponse getRates(final Currency from, final Set<Currency> to) {
-        final Map<Currency, BigDecimal> rates = ratesService.getRates(from);
+    public RatesResponse getRates(final String from, final Set<String> to) {
+        final Map<String, BigDecimal> rates = ratesService.getRates(from);
         if (!CollectionUtils.isEmpty(to)) {
             rates.keySet().retainAll(to);
         }

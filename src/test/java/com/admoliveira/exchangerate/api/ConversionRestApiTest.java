@@ -40,7 +40,7 @@ class ConversionRestApiTest {
                 .andExpect(jsonPath("$.from").value("USD"))
                 .andExpect(jsonPath("$.amount").value("100"))
                 .andExpect(jsonPath("$.conversions").isArray())
-                .andExpect(jsonPath("$.conversions", hasSize(3)));
+                .andExpect(jsonPath("$.conversions", hasSize(169)));
     }
 
     @Test
@@ -55,27 +55,16 @@ class ConversionRestApiTest {
                 .andExpect(jsonPath("$.amount").value("100"))
                 .andExpect(jsonPath("$.conversions").isArray())
                 .andExpect(jsonPath("$.conversions[0].currency").value("EUR"))
-                .andExpect(jsonPath("$.conversions[0].conversion").value(81.3399));
+                .andExpect(jsonPath("$.conversions[0].conversion").value(96.785));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"", "INVALID", "EUR,USD", ","})
-    public void invalidFrom(final String from) throws Exception {
+    @Test
+    public void noRatesAvailable() throws Exception {
         mockMvc.perform(get("/conversions")
-                        .param("from", from)
+                        .param("from", "ZZZ")
                         .param("amount", "100")
                         .header("Authorization", "Bearer " + validAccessToken))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"INVALID", "EUR,", ","})
-    public void invalidTo(final String to) throws Exception {
-        mockMvc.perform(get("/conversions")
-                        .param("from", "USD")
-                        .param("to", to)
-                        .header("Authorization", "Bearer " + validAccessToken))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isServiceUnavailable());
     }
 
     @ParameterizedTest

@@ -4,8 +4,6 @@ import com.admoliveira.exchangerate.configuration.SecurityConfig;
 import com.admoliveira.exchangerate.utils.KeycloakTokenService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +36,7 @@ public class RatesRestApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.from").value("USD"))
                 .andExpect(jsonPath("$.rates").isArray())
-                .andExpect(jsonPath("$.rates", hasSize(3)));
+                .andExpect(jsonPath("$.rates", hasSize(169)));
     }
 
     @Test
@@ -52,26 +50,15 @@ public class RatesRestApiTest {
                 .andExpect(jsonPath("$.rates").isArray())
                 .andExpect(jsonPath("$.rates", hasSize(1)))
                 .andExpect(jsonPath("$.rates[0].currency").value("EUR"))
-                .andExpect(jsonPath("$.rates[0].rate").value(0.813399));
+                .andExpect(jsonPath("$.rates[0].rate").value(0.96785));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"", "INVALID", "EUR,USD", ","})
-    public void invalidFrom(final String from) throws Exception {
+    @Test
+    public void noRatesAvailable() throws Exception {
         mockMvc.perform(get("/rates")
-                        .param("from", from)
+                        .param("from", "ZZZ")
                         .header("Authorization", "Bearer " + validAccessToken))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"INVALID", "EUR,", ","})
-    public void invalidTo(final String to) throws Exception {
-        mockMvc.perform(get("/rates")
-                        .param("from", "USD")
-                        .param("to", to)
-                        .header("Authorization", "Bearer " + validAccessToken))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isServiceUnavailable());
     }
 
     @Test

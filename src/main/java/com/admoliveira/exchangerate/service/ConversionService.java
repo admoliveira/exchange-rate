@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,8 +18,8 @@ public class ConversionService {
         this.ratesService = ratesService;
     }
 
-    public Map<Currency, BigDecimal> getConversions(final Currency from, final Set<Currency> to, final BigDecimal amount) {
-        Stream<Map.Entry<Currency, BigDecimal>> stream = ratesService.getRates(from).entrySet().stream();
+    public Map<String, BigDecimal> getConversions(final String from, final Set<String> to, final BigDecimal amount) {
+        Stream<Map.Entry<String, BigDecimal>> stream = ratesService.getRates(from).entrySet().stream();
         if (!CollectionUtils.isEmpty(to)) {
             stream = stream.filter(e -> to.contains(e.getKey()));
         }

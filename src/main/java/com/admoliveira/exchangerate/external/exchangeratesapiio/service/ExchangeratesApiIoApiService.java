@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 
 @Service
@@ -24,7 +23,7 @@ public class ExchangeratesApiIoApiService implements ExchangeRateExternalApiServ
     }
 
     @Override
-    public Map<Currency, BigDecimal> getExchangeRates(final Currency currency) {
+    public Map<String, BigDecimal> getExchangeRates(final String currency) {
         return client.getLatest(currency).rates();
     }
 

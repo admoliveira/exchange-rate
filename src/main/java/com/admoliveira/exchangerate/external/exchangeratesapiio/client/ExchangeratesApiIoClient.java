@@ -5,11 +5,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 
-import java.util.Currency;
-
 @HttpExchange("/v1")
 public interface ExchangeratesApiIoClient {
 
     @GetExchange(value = "/latest", accept = "application/json")
-    ExchangeratesApiIoLatestResponse getLatest(@RequestParam(value = "base") Currency base);
+    ExchangeratesApiIoLatestResponse getLatest(@RequestParam(value = "base") String base);
 }

@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Currency;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,11 +31,11 @@ class ExchangeratesApiIoApiServiceTest {
 
     @Test
     void getExchangeRates() {
-        final Currency baseCurrency = Currency.getInstance("USD");
+        final String baseCurrency = "USD";
 
-        final Map<Currency, BigDecimal> mockQuotes = Map.of(
-                Currency.getInstance("EUR"), new BigDecimal("0.85"),
-                Currency.getInstance("GBP"), new BigDecimal("0.75")
+        final Map<String, BigDecimal> mockQuotes = Map.of(
+                "EUR", new BigDecimal("0.85"),
+                "GBP", new BigDecimal("0.75")
         );
 
         final ExchangeratesApiIoLatestResponse response = new ExchangeratesApiIoLatestResponse(
@@ -49,12 +48,12 @@ class ExchangeratesApiIoApiServiceTest {
 
         when(mockClient.getLatest(eq(baseCurrency))).thenReturn(response);
 
-        final Map<Currency, BigDecimal> exchangeRates = service.getExchangeRates(baseCurrency);
+        final Map<String, BigDecimal> exchangeRates = service.getExchangeRates(baseCurrency);
 
         assertNotNull(exchangeRates);
         assertEquals(2, exchangeRates.size());
-        assertEquals(new BigDecimal("0.85"), exchangeRates.get(Currency.getInstance("EUR")));
-        assertEquals(new BigDecimal("0.75"), exchangeRates.get(Currency.getInstance("GBP")));
+        assertEquals(new BigDecimal("0.85"), exchangeRates.get("EUR"));
+        assertEquals(new BigDecimal("0.75"), exchangeRates.get("GBP"));
     }
 
     @Test

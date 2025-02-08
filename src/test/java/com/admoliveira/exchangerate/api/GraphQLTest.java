@@ -75,7 +75,7 @@ public class GraphQLTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.getConversions.from").value("USD"))
                 .andExpect(jsonPath("$.data.getConversions.conversions").isArray())
-                .andExpect(jsonPath("$.data.getConversions.conversions", hasSize(3)))
+                .andExpect(jsonPath("$.data.getConversions.conversions", hasSize(169)))
                 .andExpect(jsonPath("$.data.getConversions.conversions[0].currency").exists())
                 .andExpect(jsonPath("$.data.getConversions.conversions[0].conversion").exists());
     }
@@ -95,8 +95,9 @@ public class GraphQLTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.getConversions.from").value("USD"))
                 .andExpect(jsonPath("$.data.getConversions.conversions").isArray())
+                .andExpect(jsonPath("$.data.getConversions.conversions", hasSize(1)))
                 .andExpect(jsonPath("$.data.getConversions.conversions[0].currency").value("EUR"))
-                .andExpect(jsonPath("$.data.getConversions.conversions[0].conversion").value(81.3399));
+                .andExpect(jsonPath("$.data.getConversions.conversions[0].conversion").value(96.785));
     }
 
     @Test
@@ -114,7 +115,7 @@ public class GraphQLTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.getRates.from").value("USD"))
                 .andExpect(jsonPath("$.data.getRates.rates").isArray())
-                .andExpect(jsonPath("$.data.getRates.rates", hasSize(3)));
+                .andExpect(jsonPath("$.data.getRates.rates", hasSize(169)));
     }
 
     @Test
@@ -134,7 +135,7 @@ public class GraphQLTest {
                 .andExpect(jsonPath("$.data.getRates.rates").isArray())
                 .andExpect(jsonPath("$.data.getRates.rates", hasSize(1)))
                 .andExpect(jsonPath("$.data.getRates.rates[0].currency").value("EUR"))
-                .andExpect(jsonPath("$.data.getRates.rates[0].rate").value(0.813399));
+                .andExpect(jsonPath("$.data.getRates.rates[0].rate").value(0.96785));
     }
 
 }

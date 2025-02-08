@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,10 +22,10 @@ class ConversionServiceTest {
 
     private ConversionService conversionService;
 
-    private final Currency usd = Currency.getInstance("USD");
-    private final Currency eur = Currency.getInstance("EUR");
-    private final Currency gbp = Currency.getInstance("GBP");
-    private final Map<Currency, BigDecimal> rates = Map.of(
+    private final String usd = "USD";
+    private final String eur = "EUR";
+    private final String gbp = "GBP";
+    private final Map<String, BigDecimal> rates = Map.of(
             eur, BigDecimal.valueOf(0.85),
             gbp, BigDecimal.valueOf(0.75)
     );
@@ -41,7 +40,7 @@ class ConversionServiceTest {
         when(ratesService.getRates(usd)).thenReturn(rates);
 
         final BigDecimal amount = BigDecimal.valueOf(100);
-        final Map<Currency, BigDecimal> conversions = conversionService.getConversions(usd, null, amount);
+        final Map<String, BigDecimal> conversions = conversionService.getConversions(usd, null, amount);
 
         assertEquals(2, conversions.size());
         assertEquals(0, BigDecimal.valueOf(85).compareTo(conversions.get(eur)));
@@ -53,7 +52,7 @@ class ConversionServiceTest {
         when(ratesService.getRates(usd)).thenReturn(rates);
 
         final BigDecimal amount = BigDecimal.valueOf(100);
-        final Map<Currency, BigDecimal> conversions = conversionService.getConversions(usd, emptySet(), amount);
+        final Map<String, BigDecimal> conversions = conversionService.getConversions(usd, emptySet(), amount);
 
         assertEquals(2, conversions.size());
         assertEquals(0, BigDecimal.valueOf(85).compareTo(conversions.get(eur)));
@@ -65,8 +64,8 @@ class ConversionServiceTest {
         when(ratesService.getRates(usd)).thenReturn(rates);
 
         BigDecimal amount = BigDecimal.valueOf(100);
-        Set<Currency> toCurrencies = Set.of(eur);
-        Map<Currency, BigDecimal> conversions = conversionService.getConversions(usd, toCurrencies, amount);
+        Set<String> toCurrencies = Set.of(eur);
+        Map<String, BigDecimal> conversions = conversionService.getConversions(usd, toCurrencies, amount);
 
         assertEquals(1, conversions.size());
         assertEquals(0, BigDecimal.valueOf(85).compareTo(conversions.get(eur)));

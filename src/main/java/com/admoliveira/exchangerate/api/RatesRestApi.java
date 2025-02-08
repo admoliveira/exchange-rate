@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Currency;
 import java.util.Set;
 
 @RequestMapping("/rates")
@@ -24,7 +23,7 @@ public interface RatesRestApi {
     )
     RatesResponse getRates(
             @Schema(description = "The base currency for retrieving exchange rates.", example = "USD")
-            @RequestParam(value = "from") Currency from,
+            @RequestParam(value = "from") String from,
 
             @Schema(
                     description = "A comma-separated list of target currencies. " +
@@ -32,5 +31,5 @@ public interface RatesRestApi {
                     type = "string",
                     example = "EUR,GBP"
             )
-            @RequestParam(value = "to", required = false) Set<Currency> to);
+            @RequestParam(value = "to", required = false) Set<String> to);
 }

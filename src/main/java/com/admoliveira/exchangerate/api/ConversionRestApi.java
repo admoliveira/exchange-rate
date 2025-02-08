@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import java.util.Set;
 
 
@@ -25,7 +24,7 @@ public interface ConversionRestApi {
     )
     ConversionResponse getConversions(
             @Schema(description = "The source currency for conversion.", example = "USD")
-            @RequestParam(value = "from") Currency from,
+            @RequestParam(value = "from") String from,
 
             @Schema(
                     description = "A comma-separated list of target currencies. " +
@@ -33,7 +32,7 @@ public interface ConversionRestApi {
                     type = "string",
                     example = "EUR,GBP"
             )
-            @RequestParam(value = "to", required = false) Set<Currency> to,
+            @RequestParam(value = "to", required = false) Set<String> to,
 
             @Schema(description = "The amount to be converted.", example = "50.5")
             @DecimalMin(value = "0.0", inclusive = false)
