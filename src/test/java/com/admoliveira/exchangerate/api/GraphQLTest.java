@@ -61,6 +61,44 @@ public class GraphQLTest {
     }
 
     @Test
+    public void getAllRates() throws Exception {
+        final String query = """
+        {
+            "query": "query {getRates(from: \\"USD\\") { from rates {currency rate}}}"
+        }
+        """;
+
+        mockMvc.perform(post("/graphql")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(query)
+                        .header("Authorization", "Bearer " + validAccessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.getRates.from").value("USD"))
+                .andExpect(jsonPath("$.data.getRates.rates").isArray())
+                .andExpect(jsonPath("$.data.getRates.rates", hasSize(169)));
+    }
+
+    @Test
+    public void getRatesWithFilter() throws Exception {
+        final String query = """
+        {
+            "query": "query {getRates(from: \\"USD\\", to: \\"EUR\\") { from rates {currency rate}}}"
+        }
+        """;
+
+        mockMvc.perform(post("/graphql")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(query)
+                        .header("Authorization", "Bearer " + validAccessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.getRates.from").value("USD"))
+                .andExpect(jsonPath("$.data.getRates.rates").isArray())
+                .andExpect(jsonPath("$.data.getRates.rates", hasSize(1)))
+                .andExpect(jsonPath("$.data.getRates.rates[0].currency").value("EUR"))
+                .andExpect(jsonPath("$.data.getRates.rates[0].rate").value(0.96785));
+    }
+
+    @Test
     public void getConversions() throws Exception {
         final String query = """
             {
@@ -98,44 +136,6 @@ public class GraphQLTest {
                 .andExpect(jsonPath("$.data.getConversions.conversions", hasSize(1)))
                 .andExpect(jsonPath("$.data.getConversions.conversions[0].currency").value("EUR"))
                 .andExpect(jsonPath("$.data.getConversions.conversions[0].conversion").value(96.785));
-    }
-
-    @Test
-    public void getAllRates() throws Exception {
-        final String query = """
-        {
-            "query": "query {getRates(from: \\"USD\\") { from rates {currency rate}}}"
-        }
-        """;
-
-        mockMvc.perform(post("/graphql")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(query)
-                        .header("Authorization", "Bearer " + validAccessToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.getRates.from").value("USD"))
-                .andExpect(jsonPath("$.data.getRates.rates").isArray())
-                .andExpect(jsonPath("$.data.getRates.rates", hasSize(169)));
-    }
-
-    @Test
-    public void getRatesWithFilter() throws Exception {
-        final String query = """
-        {
-            "query": "query {getRates(from: \\"USD\\", to: \\"EUR\\") { from rates {currency rate}}}"
-        }
-        """;
-
-        mockMvc.perform(post("/graphql")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(query)
-                        .header("Authorization", "Bearer " + validAccessToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.getRates.from").value("USD"))
-                .andExpect(jsonPath("$.data.getRates.rates").isArray())
-                .andExpect(jsonPath("$.data.getRates.rates", hasSize(1)))
-                .andExpect(jsonPath("$.data.getRates.rates[0].currency").value("EUR"))
-                .andExpect(jsonPath("$.data.getRates.rates[0].rate").value(0.96785));
     }
 
 }

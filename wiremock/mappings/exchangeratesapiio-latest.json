@@ -4,7 +4,7 @@
     "urlPath": "/exchangeratesapiio/v1/latest",
     "queryParameters": {
       "base": {
-        "equalTo": "USD"
+        "equalTo": "EUR"
       },
       "access_key": {
         "equalTo": "api-key"

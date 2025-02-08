@@ -31,7 +31,7 @@ class ConversionRestApiTest {
     }
 
     @Test
-    public void getConversions() throws Exception {
+    public void getConversionsUSD() throws Exception {
         mockMvc.perform(get("/conversions")
                         .param("from", "USD")
                         .param("amount", "100")
@@ -41,6 +41,19 @@ class ConversionRestApiTest {
                 .andExpect(jsonPath("$.amount").value("100"))
                 .andExpect(jsonPath("$.conversions").isArray())
                 .andExpect(jsonPath("$.conversions", hasSize(169)));
+    }
+
+    @Test
+    public void getConversionsEUR() throws Exception {
+        mockMvc.perform(get("/conversions")
+                        .param("from", "EUR")
+                        .param("amount", "100")
+                        .header("Authorization", "Bearer " + validAccessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.from").value("EUR"))
+                .andExpect(jsonPath("$.amount").value("100"))
+                .andExpect(jsonPath("$.conversions").isArray())
+                .andExpect(jsonPath("$.conversions", hasSize(170)));
     }
 
     @Test

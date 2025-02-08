@@ -29,7 +29,7 @@ public class RatesRestApiTest {
     }
 
     @Test
-    public void getAllRates() throws Exception {
+    public void getAllRatesUSD() throws Exception {
         mockMvc.perform(get("/rates")
                         .param("from", "USD")
                         .header("Authorization", "Bearer " + validAccessToken))
@@ -37,6 +37,17 @@ public class RatesRestApiTest {
                 .andExpect(jsonPath("$.from").value("USD"))
                 .andExpect(jsonPath("$.rates").isArray())
                 .andExpect(jsonPath("$.rates", hasSize(169)));
+    }
+
+    @Test
+    public void getAllRatesEUR() throws Exception {
+        mockMvc.perform(get("/rates")
+                        .param("from", "EUR")
+                        .header("Authorization", "Bearer " + validAccessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.from").value("EUR"))
+                .andExpect(jsonPath("$.rates").isArray())
+                .andExpect(jsonPath("$.rates", hasSize(170)));
     }
 
     @Test
