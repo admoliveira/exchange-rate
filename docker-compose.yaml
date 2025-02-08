@@ -6,6 +6,18 @@ services:
 
     ports:
       - "8080:8080"
+
+  keycloak:
+    image: "keycloak/keycloak:26.1"
+    command: start-dev --import-realm --verbose
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    volumes:
+      - ./keycloak-dev-config.json:/opt/keycloak/data/import/keycloak-dev-config.json
+    ports:
+      - "9090:8080"
+
   redis:
     image: "redis:7.4.2"
     command: redis-server --appendonly yes --bind 0.0.0.0
