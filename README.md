@@ -1,7 +1,7 @@
 # Exchange Rate
 
 ## Overview
-`exchange-rate` is a service that provides exchange rate information via a REST API. It integrates with two external APIs to fetch exchange rate data:
+`exchange-rate` is a service that provides exchange rate information via a REST API. It integrates with two external APIs to fetch data:
 - https://exchangerate.host
 - https://exchangeratesapi.io
 
@@ -36,7 +36,7 @@ To run the service in development mode, use the following steps:
 
 1. Start the required dependencies:
    ```sh
-   docker compose -d keycloak redis wiremock
+   docker compose up -d keycloak redis wiremock
    ```
 
 2. Run the service with dev profile:

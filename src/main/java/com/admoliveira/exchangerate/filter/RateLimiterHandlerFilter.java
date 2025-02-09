@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,9 +26,9 @@ public class RateLimiterHandlerFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(final HttpServletRequest request,
+    protected void doFilterInternal(@NonNull  final HttpServletRequest request,
                                     final HttpServletResponse response,
-                                    final FilterChain filterChain) throws ServletException, IOException {
+                                    @NonNull final FilterChain filterChain) throws ServletException, IOException {
 
         final RateLimitStatus rateLimitStatus = service.limit(request);
 

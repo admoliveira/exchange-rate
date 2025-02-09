@@ -24,7 +24,8 @@ public interface ConversionRestApi {
     )
     ConversionResponse getConversions(
             @Schema(description = "The source currency for conversion.", example = "USD")
-            @RequestParam(value = "from") String from,
+            @RequestParam(value = "from")
+            String from,
 
             @Schema(
                     description = "A comma-separated list of target currencies. " +
@@ -32,9 +33,11 @@ public interface ConversionRestApi {
                     type = "string",
                     example = "EUR,GBP"
             )
-            @RequestParam(value = "to", required = false) Set<String> to,
+            @RequestParam(value = "to", required = false)
+            Set<String> to,
 
             @Schema(description = "The amount to be converted.", example = "50.5")
             @DecimalMin(value = "0.0", inclusive = false)
-            @RequestParam(value = "amount") BigDecimal amount);
+            @RequestParam(value = "amount")
+            BigDecimal amount);
 }

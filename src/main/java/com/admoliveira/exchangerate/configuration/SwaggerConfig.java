@@ -26,8 +26,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI springOpenApiConfig() {
         final Scopes scopes = new Scopes();
-        scopes.put(SCOPE_GET_RATES, "Call get rates");
-        scopes.put(SCOPE_GET_CONVERSIONS, "Call get conversions");
+        scopes.put(SCOPE_GET_RATES, "Required to get rates");
+        scopes.put(SCOPE_GET_CONVERSIONS, "Required to get conversions");
 
         return new OpenAPI()
                 .components(new Components()
