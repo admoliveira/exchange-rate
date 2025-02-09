@@ -9,14 +9,12 @@ The APIs are chosen based on a priority setting. By default, https://exchangerat
 
 ## Prerequisites
 Ensure you have the following installed:
-- Java 21
-- Docker & Docker Compose
+- Docker
 
 ## How to Run
 To build and start the service, run the following commands:
 
 ```sh
-./mvnw clean install
 docker compose up --build
 ```
 
@@ -32,6 +30,11 @@ EXCHANGE_RATE_EXTERNAL_EXCHANGERATES_API_IO_CLIENT_API_KEY: your-real-api-key
 ```
 
 ## Development Mode
+### Prerequisites
+Ensure you have the following installed:
+- Docker
+- Java 21
+
 To run the service in development mode, use the following steps:
 
 1. Start the required dependencies:
@@ -42,6 +45,11 @@ To run the service in development mode, use the following steps:
 2. Run the service with dev profile:
    ```sh
    ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+   ```
+
+To compile the service and run tests:
+   ```sh
+   ./mvnw clean install
    ```
 
 ## How to Use the API
