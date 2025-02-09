@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +31,7 @@ class ExchangerateHostApiServiceTest {
 
     @Test
     void getExchangeRates() {
-        final String baseCurrency ="USD";
+        final String baseCurrency = "USD";
 
         final Map<String, BigDecimal> mockQuotes = Map.of(
                 "USDEUR", new BigDecimal("0.85"),
@@ -53,6 +54,33 @@ class ExchangerateHostApiServiceTest {
         assertEquals(2, exchangeRates.size());
         assertEquals(new BigDecimal("0.85"), exchangeRates.get("EUR"));
         assertEquals(new BigDecimal("0.75"), exchangeRates.get("GBP"));
+    }
+
+    @Test
+    void notSuccess() {
+        final String baseCurrency = "USD";
+        final ExchangerateHostLiveResponse response = new ExchangerateHostLiveResponse(
+                false,
+                "https://www.example.com/terms",
+                "https://www.example.com/privacy",
+                System.currentTimeMillis(),
+                "USD",
+                null
+        );
+
+        when(mockClient.getLive(eq(baseCurrency))).thenReturn(response);
+
+        final RuntimeException exception = assertThrows(RuntimeException.class, () -> service.getExchangeRates(baseCurrency));
+        assertEquals("Error getting exchange rates from ExchangerateHost for currency: " + baseCurrency, exception.getMessage());
+    }
+
+    @Test
+    void throwException() {
+        final String baseCurrency = "USD";
+
+        when(mockClient.getLive(eq(baseCurrency))).thenThrow(new IllegalArgumentException());
+
+        assertThrows(IllegalArgumentException.class, () -> service.getExchangeRates(baseCurrency));
     }
 
     @Test

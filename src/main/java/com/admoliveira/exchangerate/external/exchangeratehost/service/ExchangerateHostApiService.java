@@ -2,6 +2,7 @@ package com.admoliveira.exchangerate.external.exchangeratehost.service;
 
 import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import com.admoliveira.exchangerate.external.exchangeratehost.client.ExchangerateHostClient;
+import com.admoliveira.exchangerate.external.exchangeratehost.dto.ExchangerateHostLiveResponse;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,11 @@ public class ExchangerateHostApiService implements ExchangeRateExternalApiServic
 
     @Override
     public Map<String, BigDecimal> getExchangeRates(final String currency) {
-        return client.getLive(currency).quotes().entrySet().stream()
+        final ExchangerateHostLiveResponse response = client.getLive(currency);
+        if (!response.success()) {
+            throw new RuntimeException("Error getting exchange rates from ExchangerateHost for currency: " + currency);
+        }
+        return response.quotes().entrySet().stream()
                 .filter(entry -> entry.getKey().startsWith(currency))
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().substring(currency.length()),
