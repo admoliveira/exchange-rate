@@ -22,7 +22,7 @@ docker compose up --build
 
 This will build the application and start it within a Docker container.
 
-By default, the service uses Wiremock for mocking external APIs. To use real APIs, comment out the environment variables containing the base URLs in the `docker-compose.yaml` and replace the API keys with valid ones:
+By default, the service uses Wiremock for mocking external APIs, and when using Wiremock, the service only has rates from USD and EUR. To use real APIs, comment out the environment variables containing the base URLs in the `docker-compose.yaml` and replace the API keys with valid ones:
 ```yaml
 # To use real APIs, comment ...BASE_URL vars and set the API keys
 # EXCHANGE_RATE_EXTERNAL_EXCHANGERATE_HOST_CLIENT_BASE_URL: http://wiremock:8080/exchangeratehost
