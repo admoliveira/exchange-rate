@@ -7,4 +7,10 @@ import java.time.Duration;
 @ConfigurationProperties(prefix = "exchange-rate.rate-limiter-service")
 public record RateLimiterServiceConfigProperties(Duration window, int maxRequestsPerWindow) {
 
+    public RateLimiterServiceConfigProperties {
+        if (window.toSeconds() < 1) {
+            throw new IllegalArgumentException("Window duration must be at least 1 second.");
+        }
+    }
+
 }
