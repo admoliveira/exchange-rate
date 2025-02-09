@@ -14,7 +14,7 @@ public class KeycloakTokenService {
 
     private static final RestTemplate restTemplate = new RestTemplate();
 
-    private static final String tokenUrl = "http://localhost:9090/realms/exchangerate/protocol/openid-connect/token";
+    public static String tokenUrl = null;
     private static final String clientId = "test-client-all-scopes";
     private static final String clientSecret = "test-client-all-scopes";
 

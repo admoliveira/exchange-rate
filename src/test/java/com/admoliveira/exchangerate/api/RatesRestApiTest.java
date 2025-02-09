@@ -2,6 +2,7 @@ package com.admoliveira.exchangerate.api;
 
 import com.admoliveira.exchangerate.configuration.SecurityConfig;
 import com.admoliveira.exchangerate.utils.KeycloakTokenService;
+import com.admoliveira.exchangerate.utils.TestContainers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RatesRestApiTest {
+public class RatesRestApiTest extends TestContainers {
 
     private static String validAccessToken;
 

@@ -3,30 +3,39 @@ services:
     build:
       context: .
     container_name: exchangerate
-
+    environment:
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: # left blank to use jwk set uri avoiding iss validation in dev mode
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/exchangerate/protocol/openid-connect/certs
+      EXCHANGE_RATE_SWAGGER_CONFIG_ISSUER_URI: http://localhost:9090/realms/exchangerate/protocol/openid-connect/token
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      # To use real APIs, comment ...BASE_URL vars and set the API keys
+      EXCHANGE_RATE_EXTERNAL_EXCHANGERATE_HOST_CLIENT_BASE_URL: http://wiremock:8080/exchangeratehost
+      EXCHANGE_RATE_EXTERNAL_EXCHANGERATE_HOST_CLIENT_API_KEY: api-key
+      EXCHANGE_RATE_EXTERNAL_EXCHANGERATES_API_IO_CLIENT_BASE_URL: http://wiremock:8080/exchangeratesapiio
+      EXCHANGE_RATE_EXTERNAL_EXCHANGERATES_API_IO_CLIENT_API_KEY: api-key
     ports:
       - "8080:8080"
 
   keycloak:
     image: "keycloak/keycloak:26.1"
-    command: start-dev --import-realm --verbose
+    command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
-      - ./keycloak-dev-config.json:/opt/keycloak/data/import/keycloak-dev-config.json
+      - ./src/test/resources/keycloak/keycloak-dev-config.json:/opt/keycloak/data/import/keycloak-dev-config.json
     ports:
       - "9090:8080"
 
   wiremock:
-    image: wiremock/wiremock:latest
+    image: "wiremock/wiremock:3.11.0"
     container_name: wiremock
     ports:
       - "7070:8080"
     volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings
-      - ./wiremock/__files:/home/wiremock/__files
-
+      - ./src/test/resources/wiremock/mappings:/home/wiremock/mappings
+      - ./src/test/resources/wiremock/__files:/home/wiremock/__files
 
   redis:
     image: "redis:7.4.2"
