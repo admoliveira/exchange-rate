@@ -53,14 +53,22 @@ To compile the service and run tests:
    ```
 
 ## How to Use the API
+
+### Rest API
 Swagger is available at http://localhost:8080/swagger-ui/index.html and can be used to test the API.
 
-The API is authenticated with JWT. By default, Keycloak is configured with a client that has the required scopes to call all APIs:
+### GraphQL API
+The GraphQL endpoint is available at http://localhost:8080/graphql.
+The GraphQL schema can be found at:
+- [GraphQL Schema](src/main/resources/graphql/schema.graphqls)
+
+### Authentication
+All endpoints require authentication using the `Authorization: Bearer <token>` header. By default, Keycloak is configured with a client that has the required scopes to call all APIs:
 
 - **Client ID:** `test-client-all-scopes`
 - **Client Secret:** `test-client-all-scopes`
 
-Authentication can be performed directly in Swagger by clicking the **Authorize** button.
+For rest API, authentication can be performed directly in Swagger by clicking the **Authorize** button.
 
 To manually generate a token, replace `<scope>` with the required scopes and run the following command:
 
