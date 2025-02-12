@@ -1,8 +1,8 @@
 package com.admoliveira.exchangerate.service;
 
 import com.admoliveira.exchangerate.configuration.RedisCacheConfig;
-import com.admoliveira.exchangerate.exception.JwtSubjectNotFound;
 import com.admoliveira.exchangerate.model.RateLimitStatus;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.dao.DataAccessException;
@@ -35,9 +35,10 @@ public class RateLimiterService {
         this.maxRequestsPerWindow = configProperties.maxRequestsPerWindow();
     }
 
-    public RateLimitStatus limit() {
+    public RateLimitStatus limit(@NonNull final HttpServletRequest request) {
         final long slot = (System.currentTimeMillis() / MILLIS_PER_SECOND) / windowSeconds;
-        final String key = String.format("%s::%s_%s", RedisCacheConfig.RATE_LIMITER_CACHE_NAME, getJwtSubject(), slot);
+        final String requesterId = getRequesterId(request);
+        final String key = String.format("%s::%s_%s", RedisCacheConfig.RATE_LIMITER_CACHE_NAME, requesterId, slot);
 
         long count = incrementRedis(key);
         long remaining = maxRequestsPerWindow - count;
@@ -51,12 +52,12 @@ public class RateLimiterService {
         return new RateLimitStatus(maxRequestsPerWindow, remaining, (slot + 1) * windowSeconds, allowed);
     }
 
-    private String getJwtSubject() {
+    private String getRequesterId(@NonNull final HttpServletRequest request) {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            return jwt.getSubject();
+            return "jwt-sub:" + jwt.getSubject();
         }
-        throw new JwtSubjectNotFound();
+        return "ip:" + request.getRemoteAddr();
     }
 
     public long incrementRedis(final String key) {

@@ -41,7 +41,7 @@ class RateLimiterHandlerFilterTest {
     @Test
     void allowedRequest() throws ServletException, IOException {
         final RateLimitStatus rateLimitStatus = new RateLimitStatus(100, 99, 12345L, true);
-        when(rateLimiterService.limit()).thenReturn(rateLimitStatus);
+        when(rateLimiterService.limit(request)).thenReturn(rateLimitStatus);
 
         filter.doFilterInternal(request, response, filterChain);
 
@@ -55,7 +55,7 @@ class RateLimiterHandlerFilterTest {
     @Test
     void blockedRequest() throws ServletException, IOException {
         final RateLimitStatus rateLimitStatus = new RateLimitStatus(100, 0, 12345L, false);
-        when(rateLimiterService.limit()).thenReturn(rateLimitStatus);
+        when(rateLimiterService.limit(request)).thenReturn(rateLimitStatus);
 
         filter.doFilterInternal(request, response, filterChain);
 
