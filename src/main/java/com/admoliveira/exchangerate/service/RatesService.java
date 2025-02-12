@@ -1,6 +1,6 @@
 package com.admoliveira.exchangerate.service;
 
-import com.admoliveira.exchangerate.configuration.CacheConfig;
+import com.admoliveira.exchangerate.configuration.RedisCacheConfig;
 import com.admoliveira.exchangerate.exception.UnavailableRatesException;
 import com.admoliveira.exchangerate.external.ExchangeRateExternalApiService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class RatesService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = CacheConfig.RATES_CACHE_NAME, key = "#from")
+    @Cacheable(value = RedisCacheConfig.RATES_CACHE_NAME, key = "#from")
     public Map<String, BigDecimal> getRates(final String from) {
         for (ExchangeRateExternalApiService externalApiService : externalApiServices) {
             try {

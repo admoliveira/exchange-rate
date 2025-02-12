@@ -30,7 +30,7 @@ public class RateLimiterHandlerFilter extends OncePerRequestFilter {
                                     final HttpServletResponse response,
                                     @NonNull final FilterChain filterChain) throws ServletException, IOException {
 
-        final RateLimitStatus rateLimitStatus = service.limit(request);
+        final RateLimitStatus rateLimitStatus = service.limit();
 
         response.addHeader("X-Rate-Limit-Limit", String.valueOf(rateLimitStatus.limit()));
         response.addHeader("X-Rate-Limit-Remaining", String.valueOf(rateLimitStatus.remaining()));

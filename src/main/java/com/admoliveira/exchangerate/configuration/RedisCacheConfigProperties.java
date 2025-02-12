@@ -4,11 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.time.Duration;
 
-@ConfigurationProperties(prefix = "exchange-rate.cache")
-public record CacheConfigProperties(RatesConfig rates, RateLimiterConfig rateLimiter) {
+@ConfigurationProperties(prefix = "exchange-rate.redis-cache")
+public record RedisCacheConfigProperties(RatesConfig rates) {
     public record RatesConfig(Duration timeToLive) {
-    }
-
-    public record RateLimiterConfig(Duration timeToLive) {
     }
 }

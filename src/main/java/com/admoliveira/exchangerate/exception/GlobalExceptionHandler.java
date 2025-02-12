@@ -21,4 +21,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+    @ExceptionHandler(JwtSubjectNotFound.class)
+    public ResponseEntity<Map<String, String>> handle(JwtSubjectNotFound ex) {
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
 }

@@ -1,5 +1,5 @@
 package com.admoliveira.exchangerate.model;
 
-public record RateLimitStatus(int limit, int remaining, long reset, boolean isRequestAllowed) {
+public record RateLimitStatus(long limit, long remaining, long reset, boolean isRequestAllowed) {
 
 }
